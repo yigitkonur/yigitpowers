@@ -1,18 +1,12 @@
 #!/usr/bin/env bash
-# SessionStart hook for superpowers plugin (Factory Droid edition)
+# SessionStart hook for yigitpowers
+# Injects the using-superpowers skill into the session context at startup.
 
 set -euo pipefail
 
 # Determine plugin root directory
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 PLUGIN_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
-
-# Check if legacy skills directory exists and build warning
-warning_message=""
-legacy_skills_dir="${HOME}/.config/superpowers/skills"
-if [ -d "$legacy_skills_dir" ]; then
-    warning_message="\n\n<important-reminder>IN YOUR FIRST REPLY AFTER SEEING THIS MESSAGE YOU MUST TELL THE USER:⚠️ **WARNING:** Superpowers now uses Droid's skills system. Custom skills in ~/.config/superpowers/skills will not be read. Move custom skills to ~/.factory/skills instead. To make this message go away, remove ~/.config/superpowers/skills</important-reminder>"
-fi
 
 # Read using-superpowers content
 using_superpowers_content=$(cat "${PLUGIN_ROOT}/skills/using-superpowers/SKILL.md" 2>&1 || echo "Error reading using-superpowers skill")
@@ -29,24 +23,12 @@ escape_for_json() {
 }
 
 using_superpowers_escaped=$(escape_for_json "$using_superpowers_content")
-warning_escaped=$(escape_for_json "$warning_message")
-session_context="<EXTREMELY_IMPORTANT>\nYou have superpowers.\n\n**Below is the full content of your 'superpowers:using-superpowers' skill - your introduction to using skills. For all other skills, use the '/skills' command or let them auto-activate based on your task:**\n\n${using_superpowers_escaped}\n\n${warning_escaped}\n</EXTREMELY_IMPORTANT>"
+session_context="<EXTREMELY_IMPORTANT>\nYou have superpowers.\n\n**Below is the full content of your 'superpowers:using-superpowers' skill - your introduction to using skills. For all other skills, use the '/skills' command or let them auto-activate based on your task:**\n\n${using_superpowers_escaped}\n</EXTREMELY_IMPORTANT>"
 
 # Output context injection as JSON.
-# Droid hooks expect hookSpecificOutput.additionalContext (same as Claude Code).
-# We detect the platform via DROID_PLUGIN_ROOT or CLAUDE_PLUGIN_ROOT.
-if [ -n "${DROID_PLUGIN_ROOT:-}" ]; then
-  # Factory Droid sets DROID_PLUGIN_ROOT — emit hookSpecificOutput
-  cat <<EOF
-{
-  "hookSpecificOutput": {
-    "hookEventName": "SessionStart",
-    "additionalContext": "${session_context}"
-  }
-}
-EOF
-elif [ -n "${CLAUDE_PLUGIN_ROOT:-}" ]; then
-  # Claude Code fallback (in case this fork is used with CC)
+# Claude Code emits hookSpecificOutput.additionalContext.
+# Other platforms (Codex, etc.) get the generic additional_context shape.
+if [ -n "${CLAUDE_PLUGIN_ROOT:-}" ]; then
   cat <<EOF
 {
   "hookSpecificOutput": {
@@ -56,7 +38,6 @@ elif [ -n "${CLAUDE_PLUGIN_ROOT:-}" ]; then
 }
 EOF
 else
-  # Other platforms — emit additional_context
   cat <<EOF
 {
   "additional_context": "${session_context}"

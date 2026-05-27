@@ -46,7 +46,7 @@ Skip any step = lying, not verifying
 | Build succeeds | Build command: exit 0 | Linter passing, logs look good |
 | Bug fixed | Test original symptom: passes | Code changed, assumed fixed |
 | Regression test works | Red-green cycle verified | Test passes once |
-| Droid completed | VCS diff shows changes | Droid reports "success" |
+| Subagent completed | VCS diff shows changes | Subagent reports "success" |
 | Requirements met | Line-by-line checklist | Tests passing |
 
 ## Red Flags - STOP
@@ -54,7 +54,7 @@ Skip any step = lying, not verifying
 - Using "should", "probably", "seems to"
 - Expressing satisfaction before verification ("Great!", "Perfect!", "Done!", etc.)
 - About to commit/push/PR without verification
-- Trusting droid success reports
+- Trusting subagent success reports
 - Relying on partial verification
 - Thinking "just this once"
 - Tired and wanting work over
@@ -68,7 +68,7 @@ Skip any step = lying, not verifying
 | "I'm confident" | Confidence ≠ evidence |
 | "Just this once" | No exceptions |
 | "Linter passed" | Linter ≠ compiler |
-| "Droid said success" | Verify independently |
+| "Subagent said success" | Verify independently |
 | "I'm tired" | Exhaustion ≠ excuse |
 | "Partial check is enough" | Partial proves nothing |
 | "Different words so rule doesn't apply" | Spirit over letter |
@@ -99,10 +99,10 @@ Skip any step = lying, not verifying
 ❌ "Tests pass, phase complete"
 ```
 
-**Droid delegation:**
+**Subagent delegation:**
 ```
-✅ Droid reports success → Check VCS diff → Verify changes → Report actual state
-❌ Trust droid report
+✅ Subagent reports success → Check VCS diff → Verify changes → Report actual state
+❌ Trust subagent report
 ```
 
 ## Why This Matters
@@ -122,7 +122,7 @@ From 24 failure memories:
 - ANY positive statement about work state
 - Committing, PR creation, task completion
 - Moving to next task
-- Delegating to droids
+- Delegating to subagents
 
 **Rule applies to:**
 - Exact phrases

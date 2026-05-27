@@ -4,7 +4,31 @@ A personal fork of [obra/superpowers](https://github.com/obra/superpowers) — s
 
 Upstream is great. This fork strips out the parts I don't need and adds opinions I do. The sections below are a running changelog of what's different from upstream; everything not listed here behaves the same as the original. I'll tidy this into a proper README later.
 
+This fork targets **Claude Code** and **Codex** only.
+
 ## Changelog
+
+### 2026-05-27 — Stripped Factory Droid and Copilot infrastructure
+
+This fork originally shipped as a Factory Droid plugin (it was branched from a `superpowers-droid` lineage) and carried some Copilot-adjacent crumbs. I removed all of that to keep the surface area honest: yigitpowers is for Claude Code and Codex, and only those.
+
+Removed:
+
+- `droids/` — the five role definitions (implementer, spec-reviewer, code-quality-reviewer, code-reviewer, plan-reviewer). Role behavior now lives entirely in the prompt templates the controller composes; there is no separate agent-definition file layer.
+- `.factory-plugin/` — the Factory Droid plugin manifest directory.
+- `docs/droid/01` through `docs/droid/06` — Droid-specific architecture, installation, and tool-mapping docs.
+- `install.sh` and `scripts/install.mjs` — the curl|bash Droid installer and its Node implementation. Claude Code installs via the `.claude-plugin/` marketplace; no bespoke installer needed.
+- `skills/using-superpowers/references/droid-tools.md` — the Claude-Code-to-Droid tool name mapping table.
+
+Scrubbed everywhere else:
+
+- `Factory Droid` → `Claude Code` in platform references (or rephrased to be platform-neutral where the original line was abstract).
+- `Droid` / `droid` / `Droids` → `Subagent` / `subagent` / `Subagents` in role mentions.
+- `DROID_PLUGIN_ROOT` → `CLAUDE_PLUGIN_ROOT` in the hook scripts; the dual-branch platform detection collapsed to one Claude branch plus a generic `additional_context` fallback for other platforms.
+- `superpowers-droid` → `yigitpowers` in `package.json`, `.claude-plugin/marketplace.json`, and repo URLs.
+- Droid-only tool references (`Create-PR`, `droid --worktree`, `/create-skill`) removed; `gh pr create` and standard `git worktree` instructions are now the only paths.
+
+Why: I almost never invoke this fork from Droid. Carrying two install paths, two hook branches, a separate `droids/` role layer, and a tool-mapping doc was overhead with no payoff. Trimming it down also makes the workflow more legible — every dispatch goes through the same prompt-composition discipline regardless of platform.
 
 ### 2026-05-27 — Removed the visual companion
 

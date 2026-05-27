@@ -27,13 +27,13 @@ If AGENTS.md says "don't use TDD" and a skill says "always use TDD," follow the 
 
 ## How to Access Skills
 
-**In Factory Droid:** Skills auto-activate when your task matches their description. You can also invoke skills explicitly via `/skill-name` slash commands, or browse available skills with `/skills`.
+Skills auto-activate when your task matches their description. You can also invoke skills explicitly via the `/skill-name` slash command (where supported), or browse available skills with `/skills`.
 
-**Tool name mapping:** Skills use Claude Code tool names as canonical references. See `references/droid-tools.md` for the Droid equivalents. Key mappings: `Bash`→`Execute`, `Write`→`Create`, `WebFetch`→`FetchUrl`. Tools like `Read`, `Edit`, `Glob`, `Grep`, `Task`, `TodoWrite`, and `WebSearch` are the same.
+Skills use Claude Code tool names as canonical references (`Bash`, `Write`, `Read`, `Edit`, `Glob`, `Grep`, `Task`, `TodoWrite`, `WebSearch`, etc.). When running on Codex or another platform, map any tool name in a skill to its local equivalent — the workflow is the same; the tool labels may differ.
 
 ## Platform Adaptation
 
-When a skill references the `Skill` tool for invoking another skill, use `/skill-name` or let the skill auto-activate based on your task context. When a skill references the `Task` tool for subagent dispatch, use the `Task` tool with the appropriate `subagent_type` — this works identically in Droid.
+When a skill references the `Skill` tool for invoking another skill, use your platform's invocation mechanism (`/skill-name` slash command or auto-activation). When a skill references the `Task` tool for subagent dispatch, use the corresponding subagent dispatch mechanism — the discipline is identical; the entry point may be named differently.
 
 # Using Skills
 

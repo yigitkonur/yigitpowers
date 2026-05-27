@@ -1,11 +1,11 @@
 {
-  "name": "superpowers-droid",
+  "name": "yigitpowers",
   "owner": {
     "name": "Yigit Konur",
     "email": "yigit@konur.dev"
   },
   "metadata": {
-    "description": "Superpowers skills for Factory Droid — TDD, debugging, subagent-driven development, code review",
+    "description": "Superpowers skills for Claude Code — TDD, debugging, subagent-driven development, code review",
     "version": "1.0.0"
   },
   "plugins": [
@@ -13,10 +13,10 @@
       "name": "superpowers",
       "source": {
         "source": "url",
-        "url": "https://github.com/yigitkonur/superpowers-droid.git"
+        "url": "https://github.com/yigitkonur/yigitpowers.git"
       },
-      "description": "Core skills library for Factory Droid: TDD, debugging, subagent-driven development, collaboration patterns, and proven techniques",
-      "version": "5.0.1-droid.1",
+      "description": "Core skills library for Claude Code: TDD, debugging, subagent-driven development, collaboration patterns, and proven techniques",
+      "version": "5.0.1",
       "strict": true
     }
   ]

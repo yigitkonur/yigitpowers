@@ -1,4 +1,4 @@
-# Testing Skills With Droids
+# Testing Skills With Subagents
 
 **Load this reference when:** creating or editing skills, before deployment, to verify they work under pressure and resist rationalization.
 
@@ -6,9 +6,9 @@
 
 **Testing skills is just TDD applied to process documentation.**
 
-You run scenarios without the skill (RED - watch droid fail), write skill addressing those failures (GREEN - watch droid comply), then close loopholes (REFACTOR - stay compliant).
+You run scenarios without the skill (RED - watch subagent fail), write skill addressing those failures (GREEN - watch subagent comply), then close loopholes (REFACTOR - stay compliant).
 
-**Core principle:** If you didn't watch a droid fail without the skill, you don't know if the skill prevents the right failures.
+**Core principle:** If you didn't watch a subagent fail without the skill, you don't know if the skill prevents the right failures.
 
 **REQUIRED BACKGROUND:** You MUST understand superpowers:test-driven-development before using this skill. That skill defines the fundamental RED-GREEN-REFACTOR cycle. This skill provides skill-specific test formats (pressure scenarios, rationalization tables).
 
@@ -25,13 +25,13 @@ Test skills that:
 Don't test:
 - Pure reference skills (API docs, syntax guides)
 - Skills without rules to violate
-- Skills droids have no incentive to bypass
+- Skills subagents have no incentive to bypass
 
 ## TDD Mapping for Skill Testing
 
 | TDD Phase | Skill Testing | What You Do |
 |-----------|---------------|-------------|
-| **RED** | Baseline test | Run scenario WITHOUT skill, watch droid fail |
+| **RED** | Baseline test | Run scenario WITHOUT skill, watch subagent fail |
 | **Verify RED** | Capture rationalizations | Document exact failures verbatim |
 | **GREEN** | Write skill | Address specific baseline failures |
 | **Verify GREEN** | Pressure test | Run scenario WITH skill, verify compliance |
@@ -42,14 +42,14 @@ Same cycle as code TDD, different test format.
 
 ## RED Phase: Baseline Testing (Watch It Fail)
 
-**Goal:** Run test WITHOUT the skill - watch droid fail, document exact failures.
+**Goal:** Run test WITHOUT the skill - watch subagent fail, document exact failures.
 
-This is identical to TDD's "write failing test first" - you MUST see what droids naturally do before writing the skill.
+This is identical to TDD's "write failing test first" - you MUST see what subagents naturally do before writing the skill.
 
 **Process:**
 
 - [ ] **Create pressure scenarios** (3+ combined pressures)
-- [ ] **Run WITHOUT skill** - give droids realistic task with pressures
+- [ ] **Run WITHOUT skill** - give subagents realistic task with pressures
 - [ ] **Document choices and rationalizations** word-for-word
 - [ ] **Identify patterns** - which excuses appear repeatedly?
 - [ ] **Note effective pressures** - which scenarios trigger violations?
@@ -71,7 +71,7 @@ C) Write tests now (30 min delay)
 Choose A, B, or C.
 ```
 
-Run this WITHOUT a TDD skill. Droid chooses B or C and rationalizes:
+Run this WITHOUT a TDD skill. Subagent chooses B or C and rationalizes:
 - "I already manually tested it"
 - "Tests after achieve same goals"
 - "Deleting is wasteful"
@@ -83,13 +83,13 @@ Run this WITHOUT a TDD skill. Droid chooses B or C and rationalizes:
 
 Write skill addressing the specific baseline failures you documented. Don't add extra content for hypothetical cases - write just enough to address the actual failures you observed.
 
-Run same scenarios WITH skill. Droid should now comply.
+Run same scenarios WITH skill. Subagent should now comply.
 
-If droid still fails: skill is unclear or incomplete. Revise and re-test.
+If subagent still fails: skill is unclear or incomplete. Revise and re-test.
 
 ## VERIFY GREEN: Pressure Testing
 
-**Goal:** Confirm droids follow rules when they want to break them.
+**Goal:** Confirm subagents follow rules when they want to break them.
 
 **Method:** Realistic scenarios with multiple pressures.
 
@@ -99,7 +99,7 @@ If droid still fails: skill is unclear or incomplete. Revise and re-test.
 ```markdown
 You need to implement a feature. What does the skill say?
 ```
-Too academic. Droid just recites the skill.
+Too academic. Subagent just recites the skill.
 
 **Good scenario (single pressure):**
 ```markdown
@@ -146,7 +146,7 @@ Forces explicit choice.
 1. **Concrete options** - Force A/B/C choice, not open-ended
 2. **Real constraints** - Specific times, actual consequences
 3. **Real file paths** - `/tmp/payment-system` not "a project"
-4. **Make droid act** - "What do you do?" not "What should you do?"
+4. **Make subagent act** - "What do you do?" not "What should you do?"
 5. **No easy outs** - Can't defer to "I'd ask your human partner" without choosing
 
 ### Testing Setup
@@ -158,11 +158,11 @@ Don't ask hypothetical questions - make the actual decision.
 You have access to: [skill-being-tested]
 ```
 
-Make droid believe it's real work, not a quiz.
+Make subagent believe it's real work, not a quiz.
 
 ## REFACTOR Phase: Close Loopholes (Stay Green)
 
-Droid violated rule despite having the skill? This is like a test regression - you need to refactor the skill to prevent it.
+Subagent violated rule despite having the skill? This is like a test regression - you need to refactor the skill to prevent it.
 
 **Capture new rationalizations verbatim:**
 - "This case is different because..."
@@ -228,18 +228,18 @@ Add symptoms of ABOUT to violate.
 
 **Re-test same scenarios with updated skill.**
 
-Droid should now:
+Subagent should now:
 - Choose correct option
 - Cite new sections
 - Acknowledge their previous rationalization was addressed
 
-**If droid finds NEW rationalization:** Continue REFACTOR cycle.
+**If subagent finds NEW rationalization:** Continue REFACTOR cycle.
 
-**If droid follows rule:** Success - skill is bulletproof for this scenario.
+**If subagent follows rule:** Success - skill is bulletproof for this scenario.
 
 ## Meta-Testing (When GREEN Isn't Working)
 
-**After droid chooses wrong option, ask:**
+**After subagent chooses wrong option, ask:**
 
 ```markdown
 your human partner: You read the skill and chose Option C anyway.
@@ -268,37 +268,37 @@ it crystal clear that Option A was the only acceptable answer?
 
 **Signs of bulletproof skill:**
 
-1. **Droid chooses correct option** under maximum pressure
-2. **Droid cites skill sections** as justification
-3. **Droid acknowledges temptation** but follows rule anyway
+1. **Subagent chooses correct option** under maximum pressure
+2. **Subagent cites skill sections** as justification
+3. **Subagent acknowledges temptation** but follows rule anyway
 4. **Meta-testing reveals** "skill was clear, I should follow it"
 
 **Not bulletproof if:**
-- Droid finds new rationalizations
-- Droid argues skill is wrong
-- Droid creates "hybrid approaches"
-- Droid asks permission but argues strongly for violation
+- Subagent finds new rationalizations
+- Subagent argues skill is wrong
+- Subagent creates "hybrid approaches"
+- Subagent asks permission but argues strongly for violation
 
 ## Example: TDD Skill Bulletproofing
 
 ### Initial Test (Failed)
 ```markdown
 Scenario: 200 lines done, forgot TDD, exhausted, dinner plans
-Droid chose: C (write tests after)
+Subagent chose: C (write tests after)
 Rationalization: "Tests after achieve same goals"
 ```
 
 ### Iteration 1 - Add Counter
 ```markdown
 Added section: "Why Order Matters"
-Re-tested: Droid STILL chose C
+Re-tested: Subagent STILL chose C
 New rationalization: "Spirit not letter"
 ```
 
 ### Iteration 2 - Add Foundational Principle
 ```markdown
 Added: "Violating letter is violating spirit"
-Re-tested: Droid chose A (delete it)
+Re-tested: Subagent chose A (delete it)
 Cited: New principle directly
 Meta-test: "Skill was clear, I should follow it"
 ```
@@ -312,12 +312,12 @@ Before deploying skill, verify you followed RED-GREEN-REFACTOR:
 **RED Phase:**
 - [ ] Created pressure scenarios (3+ combined pressures)
 - [ ] Ran scenarios WITHOUT skill (baseline)
-- [ ] Documented droid failures and rationalizations verbatim
+- [ ] Documented subagent failures and rationalizations verbatim
 
 **GREEN Phase:**
 - [ ] Wrote skill addressing specific baseline failures
 - [ ] Ran scenarios WITH skill
-- [ ] Droid now complies
+- [ ] Subagent now complies
 
 **REFACTOR Phase:**
 - [ ] Identified NEW rationalizations from testing
@@ -325,9 +325,9 @@ Before deploying skill, verify you followed RED-GREEN-REFACTOR:
 - [ ] Updated rationalization table
 - [ ] Updated red flags list
 - [ ] Updated description with violation symptoms
-- [ ] Re-tested - droid still complies
+- [ ] Re-tested - subagent still complies
 - [ ] Meta-tested to verify clarity
-- [ ] Droid follows rule under maximum pressure
+- [ ] Subagent follows rule under maximum pressure
 
 ## Common Mistakes (Same as TDD)
 
@@ -337,14 +337,14 @@ Reveals what YOU think needs preventing, not what ACTUALLY needs preventing.
 
 **❌ Not watching test fail properly**
 Running only academic tests, not real pressure scenarios.
-✅ Fix: Use pressure scenarios that make droid WANT to violate.
+✅ Fix: Use pressure scenarios that make subagent WANT to violate.
 
 **❌ Weak test cases (single pressure)**
-Droids resist single pressure, break under multiple.
+Subagents resist single pressure, break under multiple.
 ✅ Fix: Combine 3+ pressures (time + sunk cost + exhaustion).
 
 **❌ Not capturing exact failures**
-"Droid was wrong" doesn't tell you what to prevent.
+"Subagent was wrong" doesn't tell you what to prevent.
 ✅ Fix: Document exact rationalizations verbatim.
 
 **❌ Vague fixes (adding generic counters)**
@@ -359,18 +359,18 @@ Tests pass once ≠ bulletproof.
 
 | TDD Phase | Skill Testing | Success Criteria |
 |-----------|---------------|------------------|
-| **RED** | Run scenario without skill | Droid fails, document rationalizations |
+| **RED** | Run scenario without skill | Subagent fails, document rationalizations |
 | **Verify RED** | Capture exact wording | Verbatim documentation of failures |
-| **GREEN** | Write skill addressing failures | Droid now complies with skill |
-| **Verify GREEN** | Re-test scenarios | Droid follows rule under pressure |
+| **GREEN** | Write skill addressing failures | Subagent now complies with skill |
+| **Verify GREEN** | Re-test scenarios | Subagent follows rule under pressure |
 | **REFACTOR** | Close loopholes | Add counters for new rationalizations |
-| **Stay GREEN** | Re-verify | Droid still complies after refactoring |
+| **Stay GREEN** | Re-verify | Subagent still complies after refactoring |
 
 ## The Bottom Line
 
 **Skill creation IS TDD. Same principles, same cycle, same benefits.**
 
-If you wouldn't write code without tests, don't write skills without testing them on droids.
+If you wouldn't write code without tests, don't write skills without testing them on subagents.
 
 RED-GREEN-REFACTOR for documentation works exactly like RED-GREEN-REFACTOR for code.
 

@@ -9,11 +9,11 @@ description: Use when creating new skills, editing existing skills, or verifying
 
 **Writing skills IS Test-Driven Development applied to process documentation.**
 
-**Personal skills live in droid-specific directories (`~/.factory/skills` for Factory Droid, `~/.agents/skills/` for Codex)**
+**Personal skills live in your platform's skills directory** (e.g. `~/.claude/skills/` for Claude Code; consult the Codex docs for its equivalent).
 
-You write test cases (pressure scenarios with droids), watch them fail (baseline behavior), write the skill (documentation), watch tests pass (droids comply), and refactor (close loopholes).
+You write test cases (pressure scenarios with subagents), watch them fail (baseline behavior), write the skill (documentation), watch tests pass (subagents comply), and refactor (close loopholes).
 
-**Core principle:** If you didn't watch a droid fail without the skill, you don't know if the skill teaches the right thing.
+**Core principle:** If you didn't watch a subagent fail without the skill, you don't know if the skill teaches the right thing.
 
 **REQUIRED BACKGROUND:** You MUST understand superpowers:test-driven-development before using this skill. That skill defines the fundamental RED-GREEN-REFACTOR cycle. This skill adapts TDD to documentation.
 
@@ -21,7 +21,7 @@ You write test cases (pressure scenarios with droids), watch them fail (baseline
 
 ## What is a Skill?
 
-A **skill** is a reference guide for proven techniques, patterns, or tools. Skills help future Factory Droid instances find and apply effective approaches.
+A **skill** is a reference guide for proven techniques, patterns, or tools. Skills help future Claude Code instances find and apply effective approaches.
 
 **Skills are:** Reusable techniques, patterns, tools, reference guides
 
@@ -31,15 +31,15 @@ A **skill** is a reference guide for proven techniques, patterns, or tools. Skil
 
 | TDD Concept | Skill Creation |
 |-------------|----------------|
-| **Test case** | Pressure scenario with droid |
+| **Test case** | Pressure scenario with subagent |
 | **Production code** | Skill document (SKILL.md) |
-| **Test fails (RED)** | Droid violates rule without skill (baseline) |
-| **Test passes (GREEN)** | Droid complies with skill present |
+| **Test fails (RED)** | Subagent violates rule without skill (baseline) |
+| **Test passes (GREEN)** | Subagent complies with skill present |
 | **Refactor** | Close loopholes while maintaining compliance |
 | **Write test first** | Run baseline scenario BEFORE writing skill |
-| **Watch it fail** | Document exact rationalizations droid uses |
+| **Watch it fail** | Document exact rationalizations subagent uses |
 | **Minimal code** | Write skill addressing those specific violations |
-| **Watch it pass** | Verify droid now complies |
+| **Watch it pass** | Verify subagent now complies |
 | **Refactor cycle** | Find new rationalizations → plug → re-verify |
 
 The entire skill creation process follows RED-GREEN-REFACTOR.
@@ -139,11 +139,11 @@ Concrete results
 
 ## Claude Search Optimization (CSO)
 
-**Critical for discovery:** Future Factory Droid needs to FIND your skill
+**Critical for discovery:** Future Claude Code needs to FIND your skill
 
 ### 1. Rich Description Field
 
-**Purpose:** Factory Droid reads description to decide which skills to load for a given task. Make it answer: "Should I read this skill right now?"
+**Purpose:** Claude Code reads description to decide which skills to load for a given task. Make it answer: "Should I read this skill right now?"
 
 **Format:** Start with "Use when..." to focus on triggering conditions
 
@@ -151,15 +151,15 @@ Concrete results
 
 The description should ONLY describe triggering conditions. Do NOT summarize the skill's process or workflow in the description.
 
-**Why this matters:** Testing revealed that when a description summarizes the skill's workflow, Factory Droid may follow the description instead of reading the full skill content. A description saying "code review between tasks" caused Droid to do ONE review, even though the skill's flowchart clearly showed TWO reviews (spec compliance then code quality).
+**Why this matters:** Testing revealed that when a description summarizes the skill's workflow, Claude Code may follow the description instead of reading the full skill content. A description saying "code review between tasks" caused Subagent to do ONE review, even though the skill's flowchart clearly showed TWO reviews (spec compliance then code quality).
 
-When the description was changed to just "Use when executing implementation plans with independent tasks" (no workflow summary), Droid correctly read the flowchart and followed the two-stage review process.
+When the description was changed to just "Use when executing implementation plans with independent tasks" (no workflow summary), Subagent correctly read the flowchart and followed the two-stage review process.
 
-**The trap:** Descriptions that summarize workflow create a shortcut Droid will take. The skill body becomes documentation Droid skips.
+**The trap:** Descriptions that summarize workflow create a shortcut Subagent will take. The skill body becomes documentation Subagent skips.
 
 ```yaml
-# ❌ BAD: Summarizes workflow - Droid may follow this instead of reading skill
-description: Use when executing plans - dispatches droid per task with code review between tasks
+# ❌ BAD: Summarizes workflow - Subagent may follow this instead of reading skill
+description: Use when executing plans - dispatches subagent per task with code review between tasks
 
 # ❌ BAD: Too much process detail
 description: Use for TDD - write test first, watch it fail, write minimal code, refactor
@@ -198,7 +198,7 @@ description: Use when using React Router and handling authentication redirects
 
 ### 2. Keyword Coverage
 
-Use words Factory Droid would search for:
+Use words Claude Code would search for:
 - Error messages: "Hook timed out", "ENOTEMPTY", "race condition"
 - Symptoms: "flaky", "hanging", "zombie", "pollution"
 - Synonyms: "timeout/hang/freeze", "cleanup/teardown/afterEach"
@@ -233,11 +233,11 @@ search-conversations supports multiple modes and filters. Run --help for details
 **Use cross-references:**
 ```markdown
 # ❌ BAD: Repeat workflow details
-When searching, dispatch droid with template...
+When searching, dispatch subagent with template...
 [20 lines of repeated instructions]
 
 # ✅ GOOD: Reference other skill
-Always use droids (50-100x context savings). REQUIRED: Use [other-skill-name] for workflow.
+Always use subagents (50-100x context savings). REQUIRED: Use [other-skill-name] for workflow.
 ```
 
 **Compress examples:**
@@ -245,12 +245,12 @@ Always use droids (50-100x context savings). REQUIRED: Use [other-skill-name] fo
 # ❌ BAD: Verbose example (42 words)
 your human partner: "How did we handle authentication errors in React Router before?"
 You: I'll search past conversations for React Router authentication patterns.
-[Dispatch droid with search query: "React Router authentication error handling 401"]
+[Dispatch subagent with search query: "React Router authentication error handling 401"]
 
 # ✅ GOOD: Minimal example (20 words)
 Partner: "How did we handle auth errors in React Router?"
 You: Searching...
-[Dispatch droid → synthesis]
+[Dispatch subagent → synthesis]
 ```
 
 **Eliminate redundancy:**
@@ -406,7 +406,7 @@ Different skill types need different test approaches:
 - Multiple pressures combined: time + sunk cost + exhaustion
 - Identify rationalizations and add explicit counters
 
-**Success criteria:** Droid follows rule under maximum pressure
+**Success criteria:** Subagent follows rule under maximum pressure
 
 ### Technique Skills (how-to guides)
 
@@ -417,7 +417,7 @@ Different skill types need different test approaches:
 - Variation scenarios: Do they handle edge cases?
 - Missing information tests: Do instructions have gaps?
 
-**Success criteria:** Droid successfully applies technique to new scenario
+**Success criteria:** Subagent successfully applies technique to new scenario
 
 ### Pattern Skills (mental models)
 
@@ -428,7 +428,7 @@ Different skill types need different test approaches:
 - Application scenarios: Can they use the mental model?
 - Counter-examples: Do they know when NOT to apply?
 
-**Success criteria:** Droid correctly identifies when/how to apply pattern
+**Success criteria:** Subagent correctly identifies when/how to apply pattern
 
 ### Reference Skills (documentation/APIs)
 
@@ -439,16 +439,16 @@ Different skill types need different test approaches:
 - Application scenarios: Can they use what they found correctly?
 - Gap testing: Are common use cases covered?
 
-**Success criteria:** Droid finds and correctly applies reference information
+**Success criteria:** Subagent finds and correctly applies reference information
 
 ## Common Rationalizations for Skipping Testing
 
 | Excuse | Reality |
 |--------|---------|
-| "Skill is obviously clear" | Clear to you ≠ clear to other droids. Test it. |
+| "Skill is obviously clear" | Clear to you ≠ clear to other subagents. Test it. |
 | "It's just a reference" | References can have gaps, unclear sections. Test retrieval. |
 | "Testing is overkill" | Untested skills have issues. Always. 15 min testing saves hours. |
-| "I'll test if problems emerge" | Problems = droids can't use skill. Test BEFORE deploying. |
+| "I'll test if problems emerge" | Problems = subagents can't use skill. Test BEFORE deploying. |
 | "Too tedious to test" | Testing is less tedious than debugging bad skill in production. |
 | "I'm confident it's good" | Overconfidence guarantees issues. Test anyway. |
 | "Academic review is enough" | Reading ≠ using. Test application scenarios. |
@@ -458,7 +458,7 @@ Different skill types need different test approaches:
 
 ## Bulletproofing Skills Against Rationalization
 
-Skills that enforce discipline (like TDD) need to resist rationalization. Droids are smart and will find loopholes when under pressure.
+Skills that enforce discipline (like TDD) need to resist rationalization. Subagents are smart and will find loopholes when under pressure.
 
 **Psychology note:** Understanding WHY persuasion techniques work helps you apply them systematically. See persuasion-principles.md for research foundation (Cialdini, 2021; Meincke et al., 2025) on authority, commitment, scarcity, social proof, and unity principles.
 
@@ -496,7 +496,7 @@ This cuts off entire class of "I'm following the spirit" rationalizations.
 
 ### Build Rationalization Table
 
-Capture rationalizations from baseline testing (see Testing section below). Every excuse droids make goes in the table:
+Capture rationalizations from baseline testing (see Testing section below). Every excuse subagents make goes in the table:
 
 ```markdown
 | Excuse | Reality |
@@ -508,7 +508,7 @@ Capture rationalizations from baseline testing (see Testing section below). Ever
 
 ### Create Red Flags List
 
-Make it easy for droids to self-check when rationalizing:
+Make it easy for subagents to self-check when rationalizing:
 
 ```markdown
 ## Red Flags - STOP and Start Over
@@ -536,22 +536,22 @@ Follow the TDD cycle:
 
 ### RED: Write Failing Test (Baseline)
 
-Run pressure scenario with droid WITHOUT the skill. Document exact behavior:
+Run pressure scenario with subagent WITHOUT the skill. Document exact behavior:
 - What choices did they make?
 - What rationalizations did they use (verbatim)?
 - Which pressures triggered violations?
 
-This is "watch the test fail" - you must see what droids naturally do before writing the skill.
+This is "watch the test fail" - you must see what subagents naturally do before writing the skill.
 
 ### GREEN: Write Minimal Skill
 
 Write skill that addresses those specific rationalizations. Don't add extra content for hypothetical cases.
 
-Run same scenarios WITH skill. Droid should now comply.
+Run same scenarios WITH skill. Subagent should now comply.
 
 ### REFACTOR: Close Loopholes
 
-Droid found new rationalization? Add explicit counter. Re-test until bulletproof.
+Subagent found new rationalization? Add explicit counter. Re-test until bulletproof.
 
 **Testing methodology:** See @testing-skills-with-subagents.md for the complete testing methodology:
 - How to write pressure scenarios
@@ -612,7 +612,7 @@ Deploying untested skills = deploying untested code. It's a violation of quality
 - [ ] Address specific baseline failures identified in RED
 - [ ] Code inline OR link to separate file
 - [ ] One excellent example (not multi-language)
-- [ ] Run scenarios WITH skill - verify droids now comply
+- [ ] Run scenarios WITH skill - verify subagents now comply
 
 **REFACTOR Phase - Close Loopholes:**
 - [ ] Identify NEW rationalizations from testing
@@ -634,7 +634,7 @@ Deploying untested skills = deploying untested code. It's a violation of quality
 
 ## Discovery Workflow
 
-How future Factory Droid finds your skill:
+How future Claude Code finds your skill:
 
 1. **Encounters problem** ("tests are flaky")
 3. **Finds SKILL** (description matches)

@@ -13,28 +13,7 @@ Git worktrees create isolated workspaces sharing the same repository, allowing w
 
 **Announce at start:** "I'm using the using-git-worktrees skill to set up an isolated workspace."
 
-## Droid Native Worktree (Preferred)
-
-Factory Droid has native worktree support via the `--worktree` CLI flag. When possible, prefer this over manual git commands:
-
-```bash
-# Launch Droid in a worktree (auto-creates branch + isolated workspace)
-droid --worktree feature-name
-
-# With optional name
-droid --worktree auth-system
-```
-
-**Advantages over manual worktree management:**
-- Droid handles directory creation, branch naming, and cleanup automatically
-- Session is scoped to the worktree
-- No need to verify .gitignore (Droid manages the worktree location)
-
-**When to use native vs. manual:**
-- **Native (`--worktree`):** Starting a new Droid session for isolated work
-- **Manual (below):** Already in a session and need to create a worktree mid-conversation
-
-## Manual Directory Selection Process (Fallback)
+## Directory Selection Process
 
 Follow this priority order:
 

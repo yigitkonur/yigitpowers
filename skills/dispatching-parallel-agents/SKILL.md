@@ -3,13 +3,13 @@ name: dispatching-parallel-agents
 description: Use when facing 2+ independent tasks that can be worked on without shared state or sequential dependencies
 ---
 
-# Dispatching Parallel Droids
+# Dispatching Parallel Subagents
 
 ## Overview
 
 When you have multiple unrelated failures (different test files, different subsystems, different bugs), investigating them sequentially wastes time. Each investigation is independent and can happen in parallel.
 
-**Core principle:** Dispatch one droid per independent problem domain. Let them work concurrently.
+**Core principle:** Dispatch one subagent per independent problem domain. Let them work concurrently.
 
 ## When to Use
 
@@ -17,17 +17,17 @@ When you have multiple unrelated failures (different test files, different subsy
 digraph when_to_use {
     "Multiple failures?" [shape=diamond];
     "Are they independent?" [shape=diamond];
-    "Single droid investigates all" [shape=box];
-    "One droid per problem domain" [shape=box];
+    "Single subagent investigates all" [shape=box];
+    "One subagent per problem domain" [shape=box];
     "Can they work in parallel?" [shape=diamond];
-    "Sequential droids" [shape=box];
+    "Sequential subagents" [shape=box];
     "Parallel dispatch" [shape=box];
 
     "Multiple failures?" -> "Are they independent?" [label="yes"];
-    "Are they independent?" -> "Single droid investigates all" [label="no - related"];
+    "Are they independent?" -> "Single subagent investigates all" [label="no - related"];
     "Are they independent?" -> "Can they work in parallel?" [label="yes"];
     "Can they work in parallel?" -> "Parallel dispatch" [label="yes"];
-    "Can they work in parallel?" -> "Sequential droids" [label="no - shared state"];
+    "Can they work in parallel?" -> "Sequential subagents" [label="no - shared state"];
 }
 ```
 
@@ -40,7 +40,7 @@ digraph when_to_use {
 **Don't use when:**
 - Failures are related (fix one might fix others)
 - Need to understand full system state
-- Droids would interfere with each other
+- Subagents would interfere with each other
 
 ## The Pattern
 
@@ -53,9 +53,9 @@ Group failures by what's broken:
 
 Each domain is independent - fixing tool approval doesn't affect abort tests.
 
-### 2. Create Focused Droid Tasks
+### 2. Create Focused Subagent Tasks
 
-Each droid gets:
+Each subagent gets:
 - **Specific scope:** One test file or subsystem
 - **Clear goal:** Make these tests pass
 - **Constraints:** Don't change other code
@@ -64,7 +64,7 @@ Each droid gets:
 ### 3. Dispatch in Parallel
 
 ```typescript
-// In Factory Droid / AI environment
+// In Claude Code / AI environment
 Task("Fix agent-tool-abort.test.ts failures")
 Task("Fix batch-completion-behavior.test.ts failures")
 Task("Fix tool-approval-race-conditions.test.ts failures")
@@ -73,18 +73,18 @@ Task("Fix tool-approval-race-conditions.test.ts failures")
 
 ### 4. Review and Integrate
 
-When droids return:
+When subagents return:
 - Read each summary
 - Verify fixes don't conflict
 - Run full test suite
 - Integrate all changes
 
-## Droid Prompt Structure
+## Subagent Prompt Structure
 
-Good droid prompts are:
+Good subagent prompts are:
 1. **Focused** - One clear problem domain
 2. **Self-contained** - All context needed to understand the problem
-3. **Specific about output** - What should the droid return?
+3. **Specific about output** - What should the subagent return?
 
 ```markdown
 Fix the 3 failing tests in src/agents/agent-tool-abort.test.ts:
@@ -109,13 +109,13 @@ Return: Summary of what you found and what you fixed.
 
 ## Common Mistakes
 
-**Too broad:** "Fix all the tests" - droid gets lost
+**Too broad:** "Fix all the tests" - subagent gets lost
 **Specific:** "Fix agent-tool-abort.test.ts" - focused scope
 
-**No context:** "Fix the race condition" - droid doesn't know where
+**No context:** "Fix the race condition" - subagent doesn't know where
 **Context:** Paste the error messages and test names
 
-**No constraints:** Droid might refactor everything
+**No constraints:** Subagent might refactor everything
 **Constraints:** "Do NOT change production code" or "Fix tests only"
 
 **Vague output:** "Fix it" - you don't know what changed
@@ -126,7 +126,7 @@ Return: Summary of what you found and what you fixed.
 **Related failures:** Fixing one might fix others - investigate together first
 **Need full context:** Understanding requires seeing entire system
 **Exploratory debugging:** You don't know what's broken yet
-**Shared state:** Droids would interfere (editing same files, using same resources)
+**Shared state:** Subagents would interfere (editing same files, using same resources)
 
 ## Real Example from Session
 
@@ -141,15 +141,15 @@ Return: Summary of what you found and what you fixed.
 
 **Dispatch:**
 ```
-Droid 1 → Fix agent-tool-abort.test.ts
-Droid 2 → Fix batch-completion-behavior.test.ts
-Droid 3 → Fix tool-approval-race-conditions.test.ts
+Subagent 1 → Fix agent-tool-abort.test.ts
+Subagent 2 → Fix batch-completion-behavior.test.ts
+Subagent 3 → Fix tool-approval-race-conditions.test.ts
 ```
 
 **Results:**
-- Droid 1: Replaced timeouts with event-based waiting
-- Droid 2: Fixed event structure bug (threadId in wrong place)
-- Droid 3: Added wait for async tool execution to complete
+- Subagent 1: Replaced timeouts with event-based waiting
+- Subagent 2: Fixed event structure bug (threadId in wrong place)
+- Subagent 3: Added wait for async tool execution to complete
 
 **Integration:** All fixes independent, no conflicts, full suite green
 
@@ -158,23 +158,23 @@ Droid 3 → Fix tool-approval-race-conditions.test.ts
 ## Key Benefits
 
 1. **Parallelization** - Multiple investigations happen simultaneously
-2. **Focus** - Each droid has narrow scope, less context to track
-3. **Independence** - Droids don't interfere with each other
+2. **Focus** - Each subagent has narrow scope, less context to track
+3. **Independence** - Subagents don't interfere with each other
 4. **Speed** - 3 problems solved in time of 1
 
 ## Verification
 
-After droids return:
+After subagents return:
 1. **Review each summary** - Understand what changed
-2. **Check for conflicts** - Did droids edit same code?
+2. **Check for conflicts** - Did subagents edit same code?
 3. **Run full suite** - Verify all fixes work together
-4. **Spot check** - Droids can make systematic errors
+4. **Spot check** - Subagents can make systematic errors
 
 ## Real-World Impact
 
 From debugging session (2025-10-03):
 - 6 failures across 3 files
-- 3 droids dispatched in parallel
+- 3 subagents dispatched in parallel
 - All investigations completed concurrently
 - All fixes integrated successfully
-- Zero conflicts between droid changes
+- Zero conflicts between subagent changes

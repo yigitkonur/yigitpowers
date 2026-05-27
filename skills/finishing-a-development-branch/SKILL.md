@@ -88,15 +88,7 @@ Then: Cleanup worktree (Step 5)
 
 #### Option 2: Push and Create PR
 
-**Preferred: Use Droid's native `Create-PR` tool** (interactive, guided workflow):
-
-```
-Create-PR tool
-  # Droid handles: branch push, title/body composition, label selection
-  # Interactive — walks through PR creation step by step
-```
-
-**Fallback: Manual `gh` CLI** (if Create-PR unavailable):
+Use the `gh` CLI to push the branch and open a pull request:
 
 ```bash
 # Push branch
