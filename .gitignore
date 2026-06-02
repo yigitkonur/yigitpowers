@@ -2,3 +2,5 @@
 .private-journal/
 .claude/
 node_modules/
+inspo
+triage/
