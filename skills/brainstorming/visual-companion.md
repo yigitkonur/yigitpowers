@@ -32,41 +32,44 @@ The server watches a directory for HTML files and serves the newest one to the b
 
 ## Starting a Session
 
-The brainstorm server is a Node.js app in `lib/brainstorm-server/` inside the superpowers plugin directory.
-
-**Finding the server:** Use `$CLAUDE_PLUGIN_ROOT` if it's set. If not, locate the superpowers plugin — check `~/.claude/plugins/cache/` (Claude Code), `~/.agents/skills/superpowers/` (Codex), or similar. The server entry point is `lib/brainstorm-server/start-server.sh`.
-
-**Starting with bash (Mac/Linux, or Windows with Git Bash):**
-
 ```bash
-/path/to/superpowers/lib/brainstorm-server/start-server.sh --project-dir /path/to/project
+# Start server with persistence (mockups saved to project)
+scripts/start-server.sh --project-dir /path/to/project
 
 # Returns: {"type":"server-started","port":52341,"url":"http://localhost:52341",
 #           "screen_dir":"/path/to/project/.superpowers/brainstorm/12345-1706000000"}
 ```
 
-**Without bash (Windows/PowerShell):** Run node directly from `lib/brainstorm-server/`:
-
-```
-node index.js
-```
-
-Set these environment variables before running: `BRAINSTORM_DIR` (session directory you create — e.g., `<project>/.superpowers/brainstorm/<session-id>`), `BRAINSTORM_HOST` (default `127.0.0.1`), `BRAINSTORM_URL_HOST` (default `localhost`).
-
 Save `screen_dir` from the response. Tell user to open the URL.
 
-**Note:** Pass the project root as `--project-dir` (or set `BRAINSTORM_DIR` under it) so mockups persist in `.superpowers/brainstorm/` and survive server restarts. Without it, files go to `/tmp` and get cleaned up. Remind the user to add `.superpowers/` to `.gitignore` if it's not already there.
+**Finding connection info:** The server writes its startup JSON to `$SCREEN_DIR/.server-info`. If you launched the server in the background and didn't capture stdout, read that file to get the URL and port. When using `--project-dir`, check `<project>/.superpowers/brainstorm/` for the session directory.
 
-**Codex behavior:** In Codex (`CODEX_CI=1`), `start-server.sh` auto-switches to foreground mode by default because background jobs may be reaped. Use `--background` only if your environment reliably preserves detached processes.
+**Note:** Pass the project root as `--project-dir` so mockups persist in `.superpowers/brainstorm/` and survive server restarts. Without it, files go to `/tmp` and get cleaned up. Remind the user to add `.superpowers/` to `.gitignore` if it's not already there.
 
-**If background processes are reaped in your environment:** run in foreground from a persistent terminal session. With bash, pass `--foreground`. With node directly, it runs in foreground by default.
+**Launching the server by platform:**
 
-If the URL is unreachable from your browser (common in remote/containerized setups), bind a non-loopback host by passing `--host 0.0.0.0 --url-host localhost` (bash) or setting `BRAINSTORM_HOST=0.0.0.0` and `BRAINSTORM_URL_HOST=localhost` (node).
+**Copilot CLI:**
+```bash
+# Default mode works — the script backgrounds the server itself
+scripts/start-server.sh --project-dir /path/to/project
+```
+
+**Other environments:** The server must keep running in the background across conversation turns. If your environment reaps detached processes, use `--foreground` and launch the command with your platform's background execution mechanism.
+
+If the URL is unreachable from your browser (common in remote/containerized setups), bind a non-loopback host:
+
+```bash
+scripts/start-server.sh \
+  --project-dir /path/to/project \
+  --host 0.0.0.0 \
+  --url-host localhost
+```
+
+Use `--url-host` to control what hostname is printed in the returned URL JSON.
 
 ## The Loop
 
-1. **Check server is alive**, then **write HTML** to a new file in `screen_dir`:
-   - Before each write, check that `$SCREEN_DIR/.server-info` exists. If it doesn't (or `.server-stopped` exists), the server has shut down — restart it with `start-server.sh` before continuing. The server auto-exits after 30 minutes of inactivity.
+1. **Write HTML** to a new file in `screen_dir`:
    - Use semantic filenames: `platform.html`, `visual-style.html`, `layout.html`
    - **Never reuse filenames** — each screen gets a fresh file
    - Use Write tool — **never use cat/heredoc** (dumps noise into terminal)
@@ -247,11 +250,13 @@ If `.events` doesn't exist, the user didn't interact with the browser — use on
 
 ## Cleaning Up
 
-Stop the server using `stop-server.sh` in `lib/brainstorm-server/` (same directory as `start-server.sh`), passing the `$SCREEN_DIR`. Or kill the process by pid from `$SCREEN_DIR/.server.pid`.
+```bash
+scripts/stop-server.sh $SCREEN_DIR
+```
 
 If the session used `--project-dir`, mockup files persist in `.superpowers/brainstorm/` for later reference. Only `/tmp` sessions get deleted on stop.
 
 ## Reference
 
-- Frame template (CSS reference): `lib/brainstorm-server/frame-template.html` in the superpowers plugin directory
-- Helper script (client-side): `lib/brainstorm-server/helper.js` in the superpowers plugin directory
+- Frame template (CSS reference): `scripts/frame-template.html`
+- Helper script (client-side): `scripts/helper.js`

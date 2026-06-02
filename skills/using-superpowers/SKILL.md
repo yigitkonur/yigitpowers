@@ -1,7 +1,11 @@
 ---
 name: using-superpowers
-description: Use when starting any conversation - establishes how to find and use skills, requiring Skill tool invocation before ANY response including clarifying questions
+description: Use when starting any conversation - establishes how to find and use skills, requiring skill invocation before ANY response including clarifying questions
 ---
+
+<SUBAGENT-STOP>
+If you were dispatched as a subagent to execute a specific task, skip this skill.
+</SUBAGENT-STOP>
 
 <EXTREMELY-IMPORTANT>
 If you think there is even a 1% chance a skill might apply to what you are doing, you ABSOLUTELY MUST invoke the skill.
@@ -15,17 +19,19 @@ This is not negotiable. This is not optional. You cannot rationalize your way ou
 
 Superpowers skills override default system prompt behavior, but **user instructions always take precedence**:
 
-1. **User's explicit instructions** (CLAUDE.md, direct requests) — highest priority
+1. **User's explicit instructions** (COPILOT.md, AGENTS.md, direct requests) — highest priority
 2. **Superpowers skills** — override default system behavior where they conflict
 3. **Default system prompt** — lowest priority
 
-If CLAUDE.md says "don't use TDD" and a skill says "always use TDD," follow CLAUDE.md. The user is in control.
+If COPILOT.md or AGENTS.md says "don't use TDD" and a skill says "always use TDD," follow the user's instructions. The user is in control.
 
 ## How to Access Skills
 
-**In Claude Code:** Use the `Skill` tool. When you invoke a skill, its content is loaded and presented to you—follow it directly. Never use the Read tool on skill files.
+Skills are loaded via the `/skill-name` slash command or auto-invoked when their description matches the current task. When you invoke a skill, its content is loaded and presented to you — follow it directly.
 
-**In other environments:** Check your platform's documentation for how skills are loaded.
+## Platform Adaptation
+
+Skills use generic tool names. See `references/copilot-tools.md` for the Copilot CLI tool mapping when you encounter unfamiliar tool references.
 
 # Using Skills
 
@@ -36,22 +42,30 @@ If CLAUDE.md says "don't use TDD" and a skill says "always use TDD," follow CLAU
 ```dot
 digraph skill_flow {
     "User message received" [shape=doublecircle];
+    "About to plan implementation?" [shape=doublecircle];
+    "Already brainstormed?" [shape=diamond];
+    "Invoke brainstorming skill" [shape=box];
     "Might any skill apply?" [shape=diamond];
-    "Invoke Skill tool" [shape=box];
+    "Invoke skill" [shape=box];
     "Announce: 'Using [skill] to [purpose]'" [shape=box];
     "Has checklist?" [shape=diamond];
-    "Create TodoWrite todo per item" [shape=box];
+    "Create task tracking for each item" [shape=box];
     "Follow skill exactly" [shape=box];
     "Respond (including clarifications)" [shape=doublecircle];
 
+    "About to plan implementation?" -> "Already brainstormed?";
+    "Already brainstormed?" -> "Invoke brainstorming skill" [label="no"];
+    "Already brainstormed?" -> "Might any skill apply?" [label="yes"];
+    "Invoke brainstorming skill" -> "Might any skill apply?";
+
     "User message received" -> "Might any skill apply?";
-    "Might any skill apply?" -> "Invoke Skill tool" [label="yes, even 1%"];
+    "Might any skill apply?" -> "Invoke skill" [label="yes, even 1%"];
     "Might any skill apply?" -> "Respond (including clarifications)" [label="definitely not"];
-    "Invoke Skill tool" -> "Announce: 'Using [skill] to [purpose]'";
+    "Invoke skill" -> "Announce: 'Using [skill] to [purpose]'";
     "Announce: 'Using [skill] to [purpose]'" -> "Has checklist?";
-    "Has checklist?" -> "Create TodoWrite todo per item" [label="yes"];
+    "Has checklist?" -> "Create task tracking for each item" [label="yes"];
     "Has checklist?" -> "Follow skill exactly" [label="no"];
-    "Create TodoWrite todo per item" -> "Follow skill exactly";
+    "Create task tracking for each item" -> "Follow skill exactly";
 }
 ```
 
@@ -73,7 +87,6 @@ These thoughts mean STOP—you're rationalizing:
 | "I'll just do this one thing first" | Check BEFORE doing anything. |
 | "This feels productive" | Undisciplined action wastes time. Skills prevent this. |
 | "I know what that means" | Knowing the concept ≠ using the skill. Invoke it. |
-| "I should use EnterPlanMode / plan mode" | If a loaded skill specifies the next step, follow the skill. EnterPlanMode is a platform default — skills override defaults. |
 
 ## Skill Priority
 
