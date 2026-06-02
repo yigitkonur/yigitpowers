@@ -81,6 +81,7 @@ These thoughts mean STOP—you're rationalizing:
 | "I'll just do this one thing first" | Check BEFORE doing anything. |
 | "This feels productive" | Undisciplined action wastes time. Skills prevent this. |
 | "I know what that means" | Knowing the concept ≠ using the skill. Invoke it. |
+| "Let me enter plan mode first" | If a skill handles planning (writing-plans, brainstorming), use the skill directly. EnterPlanMode is redundant — never layer it with a planning skill. |
 
 ## Skill Priority
 
