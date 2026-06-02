@@ -1,11 +1,7 @@
 ---
 name: using-superpowers
-description: Use when starting any conversation - establishes how to find and use skills, requiring skill invocation before ANY response including clarifying questions
+description: Use when starting any conversation - establishes how to find and use skills, requiring Skill tool invocation before ANY response including clarifying questions
 ---
-
-<SUBAGENT-STOP>
-If you were dispatched as a subagent to execute a specific task, skip this skill.
-</SUBAGENT-STOP>
 
 <EXTREMELY-IMPORTANT>
 If you think there is even a 1% chance a skill might apply to what you are doing, you ABSOLUTELY MUST invoke the skill.
@@ -19,21 +15,17 @@ This is not negotiable. This is not optional. You cannot rationalize your way ou
 
 Superpowers skills override default system prompt behavior, but **user instructions always take precedence**:
 
-1. **User's explicit instructions** (AGENTS.md, direct requests) — highest priority
+1. **User's explicit instructions** (CLAUDE.md, direct requests) — highest priority
 2. **Superpowers skills** — override default system behavior where they conflict
 3. **Default system prompt** — lowest priority
 
-If AGENTS.md says "don't use TDD" and a skill says "always use TDD," follow the user's instructions. The user is in control.
+If CLAUDE.md says "don't use TDD" and a skill says "always use TDD," follow CLAUDE.md. The user is in control.
 
 ## How to Access Skills
 
-Skills auto-activate when your task matches their description. You can also invoke skills explicitly via the `/skill-name` slash command (where supported), or browse available skills with `/skills`.
+**In Claude Code:** Use the `Skill` tool. When you invoke a skill, its content is loaded and presented to you—follow it directly. Never use the Read tool on skill files.
 
-Skills use Claude Code tool names as canonical references (`Bash`, `Write`, `Read`, `Edit`, `Glob`, `Grep`, `Task`, `TodoWrite`, `WebSearch`, etc.). When running on Codex or another platform, map any tool name in a skill to its local equivalent — the workflow is the same; the tool labels may differ.
-
-## Platform Adaptation
-
-When a skill references the `Skill` tool for invoking another skill, use your platform's invocation mechanism (`/skill-name` slash command or auto-activation). When a skill references the `Task` tool for subagent dispatch, use the corresponding subagent dispatch mechanism — the discipline is identical; the entry point may be named differently.
+**In other environments:** Check your platform's documentation for how skills are loaded.
 
 # Using Skills
 
@@ -45,7 +37,7 @@ When a skill references the `Skill` tool for invoking another skill, use your pl
 digraph skill_flow {
     "User message received" [shape=doublecircle];
     "Might any skill apply?" [shape=diamond];
-    "Load skill content" [shape=box];
+    "Invoke Skill tool" [shape=box];
     "Announce: 'Using [skill] to [purpose]'" [shape=box];
     "Has checklist?" [shape=diamond];
     "Create TodoWrite todo per item" [shape=box];
@@ -53,9 +45,9 @@ digraph skill_flow {
     "Respond (including clarifications)" [shape=doublecircle];
 
     "User message received" -> "Might any skill apply?";
-    "Might any skill apply?" -> "Load skill content" [label="yes, even 1%"];
+    "Might any skill apply?" -> "Invoke Skill tool" [label="yes, even 1%"];
     "Might any skill apply?" -> "Respond (including clarifications)" [label="definitely not"];
-    "Load skill content" -> "Announce: 'Using [skill] to [purpose]'";
+    "Invoke Skill tool" -> "Announce: 'Using [skill] to [purpose]'";
     "Announce: 'Using [skill] to [purpose]'" -> "Has checklist?";
     "Has checklist?" -> "Create TodoWrite todo per item" [label="yes"];
     "Has checklist?" -> "Follow skill exactly" [label="no"];
