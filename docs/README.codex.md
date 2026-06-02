@@ -1,6 +1,6 @@
 # Superpowers for Codex
 
-Guide for using Superpowers with OpenAI Codex via native skill discovery.
+Complete guide for using Superpowers with OpenAI Codex.
 
 ## Quick Install
 
@@ -14,59 +14,63 @@ Fetch and follow instructions from https://raw.githubusercontent.com/obra/superp
 
 ### Prerequisites
 
-- OpenAI Codex CLI
-- Git
+- OpenAI Codex access
+- Shell access to install files
 
-### Steps
+### Installation Steps
 
-1. Clone the repo:
-   ```bash
-   git clone https://github.com/obra/superpowers.git ~/.codex/superpowers
-   ```
+#### 1. Clone Superpowers
 
-2. Create the skills symlink:
-   ```bash
-   mkdir -p ~/.agents/skills
-   ln -s ~/.codex/superpowers/skills ~/.agents/skills/superpowers
-   ```
-
-3. Restart Codex.
-
-### Windows
-
-Use a junction instead of a symlink (works without Developer Mode):
-
-```powershell
-New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.agents\skills"
-cmd /c mklink /J "$env:USERPROFILE\.agents\skills\superpowers" "$env:USERPROFILE\.codex\superpowers\skills"
+```bash
+mkdir -p ~/.codex/superpowers
+git clone https://github.com/obra/superpowers.git ~/.codex/superpowers
 ```
 
-## How It Works
+#### 2. Install Bootstrap
 
-Codex has native skill discovery — it scans `~/.agents/skills/` at startup, parses SKILL.md frontmatter, and loads skills on demand. Superpowers skills are made visible through a single symlink:
+The bootstrap file is included in the repository at `.codex/superpowers-bootstrap.md`. Codex will automatically use it from the cloned location.
+
+#### 3. Verify Installation
+
+Tell Codex:
 
 ```
-~/.agents/skills/superpowers/ → ~/.codex/superpowers/skills/
+Run node ~/.codex/superpowers/.codex/superpowers-codex find-skills to show available skills
 ```
 
-The `using-superpowers` skill is discovered automatically and enforces skill usage discipline — no additional configuration needed.
+You should see a list of available skills with descriptions.
 
 ## Usage
 
-Skills are discovered automatically. Codex activates them when:
-- You mention a skill by name (e.g., "use brainstorming")
-- The task matches a skill's description
-- The `using-superpowers` skill directs Codex to use one
+### Finding Skills
+
+```
+Run node ~/.codex/superpowers/.codex/superpowers-codex find-skills
+```
+
+### Loading a Skill
+
+```
+Run node ~/.codex/superpowers/.codex/superpowers-codex use-skill superpowers:brainstorming
+```
+
+### Bootstrap All Skills
+
+```
+Run node ~/.codex/superpowers/.codex/superpowers-codex bootstrap
+```
+
+This loads the complete bootstrap with all skill information.
 
 ### Personal Skills
 
-Create your own skills in `~/.agents/skills/`:
+Create your own skills in `~/.codex/skills/`:
 
 ```bash
-mkdir -p ~/.agents/skills/my-skill
+mkdir -p ~/.codex/skills/my-skill
 ```
 
-Create `~/.agents/skills/my-skill/SKILL.md`:
+Create `~/.codex/skills/my-skill/SKILL.md`:
 
 ```markdown
 ---
@@ -79,42 +83,72 @@ description: Use when [condition] - [what it does]
 [Your skill content here]
 ```
 
-The `description` field is how Codex decides when to activate a skill automatically — write it as a clear trigger condition.
+Personal skills override superpowers skills with the same name.
+
+## Architecture
+
+### Codex CLI Tool
+
+**Location:** `~/.codex/superpowers/.codex/superpowers-codex`
+
+A Node.js CLI script that provides three commands:
+- `bootstrap` - Load complete bootstrap with all skills
+- `use-skill <name>` - Load a specific skill
+- `find-skills` - List all available skills
+
+### Shared Core Module
+
+**Location:** `~/.codex/superpowers/lib/skills-core.js`
+
+The Codex implementation uses the shared `skills-core` module (ES module format) for skill discovery and parsing. This is the same module used by the OpenCode plugin, ensuring consistent behavior across platforms.
+
+### Tool Mapping
+
+Skills written for Claude Code are adapted for Codex with these mappings:
+
+- `TodoWrite` → `update_plan`
+- `Task` with subagents → Use collab `spawn_agent` + `wait` when available; if collab is disabled, say so and proceed sequentially
+- `Subagent` / `Agent` tool mentions → Map to `spawn_agent` (collab) or sequential fallback when collab is disabled
+- `Skill` tool → `node ~/.codex/superpowers/.codex/superpowers-codex use-skill`
+- File operations → Native Codex tools
 
 ## Updating
 
 ```bash
-cd ~/.codex/superpowers && git pull
+cd ~/.codex/superpowers
+git pull
 ```
-
-Skills update instantly through the symlink.
-
-## Uninstalling
-
-```bash
-rm ~/.agents/skills/superpowers
-```
-
-**Windows (PowerShell):**
-```powershell
-Remove-Item "$env:USERPROFILE\.agents\skills\superpowers"
-```
-
-Optionally delete the clone: `rm -rf ~/.codex/superpowers` (Windows: `Remove-Item -Recurse -Force "$env:USERPROFILE\.codex\superpowers"`).
 
 ## Troubleshooting
 
-### Skills not showing up
+### Skills not found
 
-1. Verify the symlink: `ls -la ~/.agents/skills/superpowers`
-2. Check skills exist: `ls ~/.codex/superpowers/skills`
-3. Restart Codex — skills are discovered at startup
+1. Verify installation: `ls ~/.codex/superpowers/skills`
+2. Check CLI works: `node ~/.codex/superpowers/.codex/superpowers-codex find-skills`
+3. Verify skills have SKILL.md files
 
-### Windows junction issues
+### CLI script not executable
 
-Junctions normally work without special permissions. If creation fails, try running PowerShell as administrator.
+```bash
+chmod +x ~/.codex/superpowers/.codex/superpowers-codex
+```
+
+### Node.js errors
+
+The CLI script requires Node.js. Verify:
+
+```bash
+node --version
+```
+
+Should show v14 or higher (v18+ recommended for ES module support).
 
 ## Getting Help
 
 - Report issues: https://github.com/obra/superpowers/issues
 - Main documentation: https://github.com/obra/superpowers
+- Blog post: https://blog.fsck.com/2025/10/27/skills-for-openai-codex/
+
+## Note
+
+Codex support is experimental and may require refinement based on user feedback. If you encounter issues, please report them on GitHub.
