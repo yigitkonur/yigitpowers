@@ -4,3 +4,9 @@
 node_modules/
 inspo
 triage/
+to-delete/
+.env.local
+.env.*.local
+*.claude-session*
+.continues-handoff.md
+derailment-notes/
